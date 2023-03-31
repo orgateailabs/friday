@@ -1,0 +1,25 @@
+{
+  "name": "friday",
+  "version": "1.0.0",
+  "description": "Slack app for teams",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Orgate-AI/friday.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Orgate-AI/friday/issues"
+  },
+  "homepage": "https://github.com/Orgate-AI/friday#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.12.2",
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22"
+  }
+}
