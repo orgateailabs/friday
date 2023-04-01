@@ -10,7 +10,7 @@ const app = new App({
   appToken:process.env.APP_TOKEN
 });
 
-app.event('app_mention', async ({ event, message, context, client, say }) => {
+app.event('app_mention', async ({ event, context, client, say }) => {
   var botId = context.botUserId;
   var text = event.text.replace(`<@${botId}>`, '')
   var res = await getData.getDataByQuery(text);
