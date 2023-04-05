@@ -1,6 +1,8 @@
 const {App}  = require('@slack/bolt');
 require('dotenv').config();
 
+const localStorage = require('localStorage');
+
 const getData = require('./src/lib/getdata');
 
 const app = new App({
@@ -18,11 +20,20 @@ const formatData = (data) => {
   return formattedString;
 }
 
+// pop to get API key and store in the localstorage
+app.command("/config", async({command, ask, say}) => {
+  // open modal
+  // ask api key
+    //  - set API key in local-storage
+})
+
 app.event('app_mention', async ({ event, context, client, say }) => {
   var botId = context.botUserId;
   var text = event.text.replace(`<@${botId}>`, '')
+  localStorage.setItem("api-key", "68e9caf7-c7ac-45e0-89b3-42d7733569d9");
   var res = await getData.getDataByQuery(text);
   var result  = formatData(res.data)
+  console.log(localStorage.getItem('api-key'))
   await say({"text": `${result}`, "thread_ts": event.thread_ts || event.ts });
 });
 
