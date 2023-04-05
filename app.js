@@ -10,11 +10,20 @@ const app = new App({
   appToken:process.env.APP_TOKEN
 });
 
+const formatData = (data) => {
+  const formattedData = data.map(innerArray => innerArray.map(element => "'" + element + "'").join(" "));
+  console.log(formattedData)
+  const formattedString = formattedData.join("\n");
+  console.log(formattedString);
+  return formattedString;
+}
+
 app.event('app_mention', async ({ event, context, client, say }) => {
   var botId = context.botUserId;
   var text = event.text.replace(`<@${botId}>`, '')
   var res = await getData.getDataByQuery(text);
-  await say({"text": `<@${event.user}> ${res.data}`, "thread_ts": event.thread_ts || event.ts });
+  var result  = formatData(res.data)
+  await say({"text": `${result}`, "thread_ts": event.thread_ts || event.ts });
 });
 
 (async () => {
