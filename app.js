@@ -15,7 +15,7 @@ const app = new App({
 });
 
 // Listen for a slash command invocation
-app.command('/auth', async ({ ack, body, client, logger }) => {
+app.command('/config', async ({ ack, body, client, logger }) => {
   // Acknowledge the command request
   await ack();
 
@@ -30,7 +30,7 @@ app.command('/auth', async ({ ack, body, client, logger }) => {
         callback_id: 'view_1',
         title: {
           type: 'plain_text',
-          text: 'Friday Auth'
+          text: 'Friday Config'
         },
         blocks: [
           {
@@ -47,12 +47,57 @@ app.command('/auth', async ({ ack, body, client, logger }) => {
               "action_id": "option_1",
               "placeholder": {
                 "type": "plain_text",
-                "text": "First option"
+                "text": "Host uri"
               }
             },
             "label": {
               "type": "plain_text",
-              "text": "Option 1"
+              "text": "Host"
+            }
+          }, 
+          {
+            "type": "input",
+            "element": {
+              "type": "plain_text_input",
+              "action_id": "option_1",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "database name"
+              }
+            },
+            "label": {
+              "type": "plain_text",
+              "text": "Database name"
+            }
+          },
+          {
+            "type": "input",
+            "element": {
+              "type": "plain_text_input",
+              "action_id": "option_1",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "database user"
+              }
+            },
+            "label": {
+              "type": "plain_text",
+              "text": "Database user"
+            }
+          },
+          {
+            "type": "input",
+            "element": {
+              "type": "plain_text_input",
+              "action_id": "option_1",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "database password"
+              }
+            },
+            "label": {
+              "type": "plain_text",
+              "text": "Database password"
             }
           },
           {
@@ -62,7 +107,7 @@ app.command('/auth', async ({ ack, body, client, logger }) => {
               "text": "Select Database type"
             },
             "accessory": {
-              "type": "multi_static_select",
+              "type": "static_select",
               "placeholder": {
                 "type": "plain_text",
                 "text": "Select options",
@@ -92,16 +137,55 @@ app.command('/auth', async ({ ack, body, client, logger }) => {
         ],
         submit: {
           type: 'plain_text',
-          text: 'Submit'
+          text: "Submit"
         },
 
       }
     });
     logger.info(result);
+    // console.log(client.views.)
   }
   catch (error) {
     logger.error(error);
   }
+});
+
+// Handle a view_submission request
+app.view('view_1', async ({ ack, body, view, client, logger }) => {
+  // Acknowledge the view_submission request
+  await ack();
+
+  // Do whatever you want with the input data - here we're saving it to a DB then sending the user a verification of their submission
+
+  // Assume there's an input block with `block_1` as the block_id and `input_a`
+  console.log(view['state']['values'])
+  // console.log(body['user'])
+  // const val = view['state']['values']['block_1']['input_a'];
+  const user = body['user']['id'];
+
+  // Message to send user
+  let msg = '';
+  // Save to DB
+  // const results = await db.set(user.input, val);
+
+  // if (results) {
+  //   // DB save was successful
+  //   msg = 'Your submission was successful';
+  // } else {
+  //   msg = 'There was an error with your submission';
+  // }
+
+  // Message the user
+  try {
+    await client.chat.postMessage({
+      channel: user,
+      text: "something"
+    });
+  }
+  catch (error) {
+    logger.error(error);
+  }
+
 });
 
 const formatData = (data) => {
