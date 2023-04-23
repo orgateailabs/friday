@@ -42,9 +42,10 @@ app.command('/config', async ({ ack, body, client, logger }) => {
           },
           {
             "type": "input",
+            "block_id": "block_uri",
             "element": {
               "type": "plain_text_input",
-              "action_id": "option_1",
+              "action_id": "option_0",
               "placeholder": {
                 "type": "plain_text",
                 "text": "Host uri"
@@ -74,7 +75,7 @@ app.command('/config', async ({ ack, body, client, logger }) => {
             "type": "input",
             "element": {
               "type": "plain_text_input",
-              "action_id": "option_1",
+              "action_id": "option_2",
               "placeholder": {
                 "type": "plain_text",
                 "text": "database user"
@@ -89,7 +90,7 @@ app.command('/config', async ({ ack, body, client, logger }) => {
             "type": "input",
             "element": {
               "type": "plain_text_input",
-              "action_id": "option_1",
+              "action_id": "option_3",
               "placeholder": {
                 "type": "plain_text",
                 "text": "database password"
@@ -158,6 +159,7 @@ app.view('view_1', async ({ ack, body, view, client, logger }) => {
   // Do whatever you want with the input data - here we're saving it to a DB then sending the user a verification of their submission
 
   // Assume there's an input block with `block_1` as the block_id and `input_a`
+  console.log(view['state']['values']['block_uri'])
   console.log(view['state']['values'])
   // console.log(body['user'])
   // const val = view['state']['values']['block_1']['input_a'];
@@ -165,15 +167,6 @@ app.view('view_1', async ({ ack, body, view, client, logger }) => {
 
   // Message to send user
   let msg = '';
-  // Save to DB
-  // const results = await db.set(user.input, val);
-
-  // if (results) {
-  //   // DB save was successful
-  //   msg = 'Your submission was successful';
-  // } else {
-  //   msg = 'There was an error with your submission';
-  // }
 
   // Message the user
   try {
