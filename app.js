@@ -1,7 +1,7 @@
 const {App}  = require('@slack/bolt');
 require('dotenv').config();
 
-const express = require('express');
+const axios = require('axios');
 
 const localStorage = require('localStorage');
 
@@ -42,10 +42,26 @@ app.command('/config', async ({ ack, body, client, logger }) => {
           },
           {
             "type": "input",
-            "block_id": "block_uri",
+            "block_id": "block_apikey",
             "element": {
               "type": "plain_text_input",
               "action_id": "option_0",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Your API key"
+              }
+            },
+            "label": {
+              "type": "plain_text",
+              "text": "API Key"
+            }
+          }, 
+          {
+            "type": "input",
+            "block_id": "block_uri",
+            "element": {
+              "type": "plain_text_input",
+              "action_id": "option_1",
               "placeholder": {
                 "type": "plain_text",
                 "text": "Host uri"
@@ -58,9 +74,10 @@ app.command('/config', async ({ ack, body, client, logger }) => {
           }, 
           {
             "type": "input",
+            "block_id": "block_dbname",
             "element": {
               "type": "plain_text_input",
-              "action_id": "option_1",
+              "action_id": "option_2",
               "placeholder": {
                 "type": "plain_text",
                 "text": "database name"
@@ -73,9 +90,10 @@ app.command('/config', async ({ ack, body, client, logger }) => {
           },
           {
             "type": "input",
+            "block_id": "block_user",
             "element": {
               "type": "plain_text_input",
-              "action_id": "option_2",
+              "action_id": "option_3",
               "placeholder": {
                 "type": "plain_text",
                 "text": "database user"
@@ -88,9 +106,10 @@ app.command('/config', async ({ ack, body, client, logger }) => {
           },
           {
             "type": "input",
+            "block_id": "block_dbpass",
             "element": {
               "type": "plain_text_input",
-              "action_id": "option_3",
+              "action_id": "option_4",
               "placeholder": {
                 "type": "plain_text",
                 "text": "database password"
@@ -103,6 +122,7 @@ app.command('/config', async ({ ack, body, client, logger }) => {
           },
           {
             "type": "section",
+            "block_id": "block_dbtype",
             "text": {
               "type": "mrkdwn",
               "text": "Select Database type"
@@ -144,7 +164,6 @@ app.command('/config', async ({ ack, body, client, logger }) => {
       }
     });
     logger.info(result);
-    // console.log(client.views.)
   }
   catch (error) {
     logger.error(error);
@@ -153,53 +172,35 @@ app.command('/config', async ({ ack, body, client, logger }) => {
 
 // Handle a view_submission request
 app.view('view_1', async ({ ack, body, view, client, logger }) => {
-  // Acknowledge the view_submission request
   await ack();
 
-  // Do whatever you want with the input data - here we're saving it to a DB then sending the user a verification of their submission
+  var allValues = view['state']['values']
 
-  // Assume there's an input block with `block_1` as the block_id and `input_a`
-  console.log(view['state']['values']['block_uri'])
-  console.log(view['state']['values'])
-  // console.log(body['user'])
-  // const val = view['state']['values']['block_1']['input_a'];
-  const user = body['user']['id'];
+  var apiKey = allValues['block_apikey']['option_0']['value']
+  var dbURI = allValues['block_uri']['option_1']['value']
+  var dbName = allValues['block_dbname']['option_2']['value']
+  var dbUser = allValues['block_user']['option_3']['value']
+  var dbPass = allValues['block_dbpass']['option_4']['value']
+  var dbType = allValues['block_dbtype']['multi_static_select-action']['selected_option']['text']['text']
 
-  // Message to send user
-  let msg = '';
+  console.log(apiKey, dbURI, dbName, dbUser, dbPass, dbType)
+  var config = {"dburi":dbURI, "dbName": dbName, "dbUser": dbUser, "dbPass": dbPass, "dbType": dbType}
+  localStorage.setItem("dbConfig", config)
+  localStorage.setItem("apiKey", apiKey)
 
-  // Message the user
-  try {
-    await client.chat.postMessage({
-      channel: user,
-      text: "something"
-    });
-  }
-  catch (error) {
-    logger.error(error);
-  }
+  var res = await getData.dbConfig(apiKey, config);
+  console.log(res)
 
 });
 
 const formatData = (data) => {
   const formattedData = data.map(innerArray => innerArray.map(element => "'" + element + "'").join(" "));
-  console.log(formattedData)
+  // console.log(formattedData)
   const formattedString = formattedData.join("\n");
-  console.log(formattedString);
+  // console.log(formattedString);
   return formattedString;
 }
 
-// Authentication
-
-
-
-// pop to get API key and store in the localstorage
-app.command("/config", async({command, ask, say}) => {
-  // open modal
-  // ask api key
-  //  - set API key in local-storage
-  
-})
 
 app.event('app_mention', async ({ event, context, client, say }) => {
   var botId = context.botUserId;

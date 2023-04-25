@@ -2,6 +2,8 @@ const axios  = require('axios');
 
 const URL = 'http://localhost:3030/'
 
+const dbConfigURL = "";
+
 const getDataByQuery = async (query) => {
   try {
     const data = await axios.post('http://localhost:3030/query', {
@@ -19,4 +21,20 @@ const getDataByQuery = async (query) => {
   }
 };
 
-module.exports = {getDataByQuery};
+const dbConfig = async (apiKey, config) => {
+  var body = {
+    "db_config": config,
+    "api_key": apiKey
+  }
+  var headers = {
+    'Content-Type': 'application/json'
+  }
+  try {
+    const data = await axios.post(dbConfigURL, body, headers);
+    return await data.data
+  } catch(error){
+    console.log("error:" + error);
+  }
+}
+
+module.exports = {getDataByQuery, dbConfig};
