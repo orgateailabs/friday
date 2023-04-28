@@ -1,13 +1,14 @@
 const axios  = require('axios');
 
-const URL = 'http://localhost:3030/'
+const QUERYURL = "https://orgateai.ue.r.appspot.com/query";
+const CONFIGURL = "https://orgateai.ue.r.appspot.com/config";
 
-const dbConfigURL = "";
 
-const getDataByQuery = async (query) => {
+const getDataByQuery = async (apiKey, dbConfig, query) => {
   try {
-    const data = await axios.post('http://localhost:3030/query', {
-      "api_key": "68e9caf7-c7ac-45e0-89b3-42d7733569d9",
+    const data = await axios.post(QUERYURL, {
+      "api_key": apiKey,
+      "db_config": dbConfig,
       "query": query
     },
     {
@@ -30,7 +31,7 @@ const dbConfig = async (apiKey, config) => {
     'Content-Type': 'application/json'
   }
   try {
-    const data = await axios.post(dbConfigURL, body, headers);
+    const data = await axios.post(CONFIGURL, body, headers);
     return await data.data
   } catch(error){
     console.log("error:" + error);

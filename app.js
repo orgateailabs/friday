@@ -190,14 +190,12 @@ app.view('view_1', async ({ ack, body, view, client, logger }) => {
 
   var res = await getData.dbConfig(apiKey, config);
   console.log(res)
-
+  
 });
 
 const formatData = (data) => {
   const formattedData = data.map(innerArray => innerArray.map(element => "'" + element + "'").join(" "));
-  // console.log(formattedData)
   const formattedString = formattedData.join("\n");
-  // console.log(formattedString);
   return formattedString;
 }
 
@@ -205,14 +203,16 @@ const formatData = (data) => {
 app.event('app_mention', async ({ event, context, client, say }) => {
   var botId = context.botUserId;
   var text = event.text.replace(`<@${botId}>`, '')
-  localStorage.setItem("api-key", "68e9caf7-c7ac-45e0-89b3-42d7733569d9");
+  // localStorage.setItem("api-key", "68e9caf7-c7ac-45e0-89b3-42d7733569d9");
+  console.log(localStorage.getItem('api-key'))
+  console.log(localStorage.getItem('dbConfig'))
   var res = await getData.getDataByQuery(text);
   var result  = formatData(res.data)
-  // console.log(localStorage.getItem('api-key'))
+
   await say({"text": `${result}`, "thread_ts": event.thread_ts || event.ts });
 });
 
 (async () => {
-  await app.start(3000);
-  console.log('⚡️ Bolt app started');
+  await app.start(process.env.PORT || 3000);
+  console.log('⚡️ Bolt app started on port %d', process.env.PORT);
 })();
